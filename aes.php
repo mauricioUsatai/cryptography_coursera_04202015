@@ -41,7 +41,7 @@ function KeyExpansion($key) {
 
 	if (strlen($key) == 32) {
 		$nk = $nk128;
-		$nb; = $nb128;
+		$nb = $nb128;
 		$nr = $nr128;
 	} else if (strlen($key) == 48) {
 		$nk = $nk192;
