@@ -2,18 +2,7 @@
 
 include('sbox.php');
 
-$nb128 = 4;
-$nb192 = 4;
-$nb256 = 4;
-
-$nk128 = 4;
-$nk192 = 6;
-$nk256 = 8;
-
-$nr128 = 10;
-$nr192 = 12;
-$nr256 = 14;
-
+$nb = 4; 
 
 function SubBytes($byte) {
 	global $sbox;
@@ -37,23 +26,10 @@ function StrXor($hex1, $hex2) {
 
 
 function KeyExpansion($key) {
-	global $nk128, $nr192, $nk256;
+	global $nb;
 
-	if (strlen($key) == 32) {
-		$nk = $nk128;
-		$nb = $nb128;
-		$nr = $nr128;
-	} else if (strlen($key) == 48) {
-		$nk = $nk192;
-		$nb = $nb192;
-		$nr = $nr192;
-	} else if (strlen($key) == 64) {
-		$nk = $nk256;
-		$nb = $nb256;
-		$nr = $nr256;
-	} else {
-		return;
-	}
+	$nk = (4*strlen($key))/32;
+	$nr = 10 + $nk - $nb;
 
 	$temp = '';
 	$i = 0;
