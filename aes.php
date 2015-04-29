@@ -18,12 +18,17 @@ function SubWords($word) {
 }
 
 function StrXor($hex1, $hex2) {
-	return bin2hex(pack('H*', $hex1) ^ pack('H*',hex$s2));
+	return bin2hex(pack('H*', $hex1) ^ pack('H*',$hex2));
 }
 
+function RotWord($word) {
+	return substr($word, 2, 6) . substr($word, 0, 2);
+}
 
-
-
+function Rcon($index) {
+	global $rcon;
+	return $rcon[$index] . '000000';
+}
 
 function KeyExpansion($key) {
 	global $nb;
@@ -34,21 +39,22 @@ function KeyExpansion($key) {
 	$temp = '';
 	$i = 0;
 
+	echo "nk = {$nk}, nr = {$nr}\n";
+
 	for (;$i < $nk; $i++) {
 		$w[$i] = substr($key, 8 * $i, 8);
 		echo 'w' . $i . ' = ' . $w[$i] . ', ';
 	}
-	echo '<br />';
+	echo "\n";
 
 	for ($i = $nk; $i < ($nb * ($nr + 1)); $i++) {
 		$temp = $w[$i - 1];
 		if (($i % $nk) == 0) {
-			$temp = StrXor(SubWord(RotWord($temp)), Rcon[$i / $nk]);
+			$temp = StrXor(SubWords(RotWord($temp)), Rcon($i / $nk));
 		} else if (($nk > 6) && (($i % $nk) == 4)) {
-			$temp = SubWord($temp);
+			$temp = SubWords($temp);
 		}
 		$w[$i] = StrXor($w[$i - $nk], $temp);
 	}
 	return $w;
 }
-
